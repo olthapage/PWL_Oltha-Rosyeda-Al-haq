@@ -74,4 +74,11 @@ Route::resource('photos', PhotoController::class)->only([
    Route::resource('photos', PhotoController::class)->except([
     'create', 'store', 'update', 'destroy'
 ]);
-   
+
+//Percobaan 4
+Route::get('/greeting', function () {
+    return view('blog.hello', ['name' => 'Oltha']);
+    });
+
+Route::get('/greeting', [WelcomeController::class,
+'greeting']);
