@@ -1,6 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AboutController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\PhotoController;
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -13,11 +22,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Basic Routing
-// Routing di Laravel membutuhkan informasi mengenai http verb kemudian input berupa url dan apa yang harus dilakukan ketika menerima url tersebut
+
 Route::get('/hello', function () {
     return 'Hello World';
 });
+
+
 
 Route::get('/world', function () {
     return 'World';
@@ -28,7 +38,7 @@ Route::get('/', function () {
 });
 
 Route::get('/about', function () {
-    return '2341720145';
+    return ' Oltha Rosyeda Al haq, 2341720145';
 });
 
 // Route Parameters
@@ -51,3 +61,17 @@ Route::get('/user/{name?}', function ($name='John')  {
     return 'Nama saya '.$name; 
 });
 
+
+//Percobban controller
+Route::get('/hello', [WelcomeController::class,'hello']); // menambhakan controller WlcomeController pada route
+Route::get('index', [HomeController::class,'/']);
+Route::get('/about', [AboutController::class,'about']);
+Route::get('/articles/{id}', [ArticleController::class,'articles']);
+
+Route::resource('photos', PhotoController::class)->only([
+    'index', 'show'
+]);
+   Route::resource('photos', PhotoController::class)->except([
+    'create', 'store', 'update', 'destroy'
+]);
+   
