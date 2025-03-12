@@ -150,8 +150,10 @@ class UserController extends Controller {
         return redirect('/user');*/
 
     // praktikum 2.7
+    /*$user = UserModel::with('level')->get();
+    dd($user);*/
     $user = UserModel::with('level')->get();
-    dd($user);
+    return view('user', ['data' => $user]);
     }
 
    
