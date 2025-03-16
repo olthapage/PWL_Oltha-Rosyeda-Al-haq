@@ -30,3 +30,11 @@ Route::post('/user/tambah_simpan', [UserController::class, 'tambah_simpan']);
 Route::get('/user/ubah/{id}', [UserController::class, 'ubah']);
 Route::put('/user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan']);
 Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
+
+//praktikum jobsheet 5
+Route::get('/kategori', [KategoriController::class, 'index']);
+Route::get('/kategori/create', [KategoriController::class, 'create'])->name('kategori.create');
+Route::post('/kategori/store', [KategoriController::class, 'store'])->name('kategori.store');
+Route::post('/kategori/edit/{id}', [KategoriController::class, 'edit'])->name('kategori.edit');
+Route::get('/kategori/store', [KategoriController::class, 'store'])->name('kategori.store');
+Route::put('/kategori/store', [KategoriController::class, 'store'])->name('kategori.store');
