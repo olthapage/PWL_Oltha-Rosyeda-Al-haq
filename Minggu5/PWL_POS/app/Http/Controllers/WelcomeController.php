@@ -4,19 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class WelcomeController extends Controller // controller WelcomeController memiliki method hello() dan mengembalikan teks "Hello World" ketika di panggil melalui route
+class WelcomeController extends Controller 
 {
-    public function hello() {
-        return 'Hello World';
-       }
+    public function index() {
+        $breadcrumb = (object) [
+            'title' => 'Selamat Datang',
+            'list' => ['Home', 'Welcome']
+        ];
 
-    public function greeting(){
-        return view('blog.hello', ['name' => 'Oltha'])
-        ->with('name','Oltha')
-        ->with('occupation','Student');
-        }
-       
-       
+        $activeMenu = 'dashboard';
+
+        return view('welcome', ['breadcrumb' => $breadcrumb, 'activeMenu' => $activeMenu]);
+    }   
 }
 
 
