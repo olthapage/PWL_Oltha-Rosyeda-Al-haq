@@ -9,20 +9,21 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up()
+{
+    if (!Schema::hasTable('m_barang')) {
         Schema::create('m_barang', function (Blueprint $table) {
             $table->id('barang_id');
-            $table->unsignedBigInteger('kategori_id')->index();
-            $table->string('barang_kode', 10)->unique();
+            $table->foreignId('kategori_id')->constrained('m_kategori')->onDelete('cascade');
+            $table->string('barang_kode', 10);
             $table->string('barang_nama', 100);
             $table->integer('harga_beli');
             $table->integer('harga_jual');
             $table->timestamps();
-
-            $table->foreign('kategori_id')->references('kategori_id')->on('m_kategori');
         });
     }
+}
+
 
     /**
      * Reverse the migrations.

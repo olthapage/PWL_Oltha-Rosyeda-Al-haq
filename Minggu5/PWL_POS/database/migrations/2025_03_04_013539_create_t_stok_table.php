@@ -9,20 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up()
+{
+    if (!Schema::hasTable('t_stok')) {
         Schema::create('t_stok', function (Blueprint $table) {
             $table->id('stok_id');
-            $table->unsignedBigInteger('barang_id')->index();
-            $table->unsignedBigInteger('user_id')->index();
+            $table->foreignId('barang_id')->constrained('m_barang')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('m_user')->onDelete('cascade');
             $table->dateTime('stok_tanggal');
             $table->integer('stok_jumlah');
             $table->timestamps();
-
-            $table->foreign('barang_id')->references('barang_id')->on('m_barang');
-            $table->foreign('user_id')->references('user_id')->on('m_user');
         });
     }
+}
 
     /**
      * Reverse the migrations.

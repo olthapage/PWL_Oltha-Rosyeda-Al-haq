@@ -9,20 +9,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
+    public function up()
+{
+    if (!Schema::hasTable('m_user')) {
         Schema::create('m_user', function (Blueprint $table) {
             $table->id('user_id');
-            $table->unsignedBigInteger('level_id')->index(); // indexing untuk Foreignkey
-            $table->string('username', 20)->unique(); // unique untuk memastikan tidak ada username yang sama
+            $table->foreignId('level_id')->constrained('m_level')->onDelete('cascade');
+            $table->string('username', 20);
             $table->string('nama', 100);
-            $table->string('password');
+            $table->string('password', 255);
             $table->timestamps();
-
-            //mendefisikan foreign key pada kolo level_id mengacu pada kolom level_id di table m_level
-            $table->foreign('level_id')->references('level_id')->on('m_level');
         });
     }
+}
+
 
     /**
      * Reverse the migrations.
