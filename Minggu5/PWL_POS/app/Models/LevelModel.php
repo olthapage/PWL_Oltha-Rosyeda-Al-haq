@@ -12,7 +12,10 @@ class LevelModel extends Model
 
     use HasFactory;
     protected $table = 'm_level';
-    protected $primaryKey = 'user_id';
+    protected $primaryKey = 'level_id';
+
+    // Daftar atribut yang dapat diisi melalui mass assignment
+    protected $fillable = ['level_kode', 'level_nama'];
 
     public function user(): BelongsTo {
         return $this->belongsTo(UserModel::class);
