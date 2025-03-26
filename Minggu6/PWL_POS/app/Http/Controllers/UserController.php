@@ -371,45 +371,49 @@ class UserController extends Controller
         return view('user.edit_ajax', ['user' => $user, 'level' => $level]);
     }
     public function update_ajax(Request $request, $id)
-    {
-        // cek apakah request dari ajax
-        if ($request->ajax() || $request->wantsJson()) {
-            $rules = [
-                'level_id' => 'required|integer',
-                'username' => 'required|max:20|unique:m_user,username,' . $id . ',user_id',
-                'nama' => 'required|max:100',
-                'password' => 'nullable|min:6|max:20'
-            ];
-            // use Illuminate\Support\Facades\Validator;
-            $validator = Validator::make($request->all(), $rules);
-
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => false, // respon json, true: berhasil, false: gagal
-                    'message' => 'Validasi gagal.',
-                    'msgField' => $validator->errors() // menunjukkan field mana yang error
-                ]);
-            }
-
-            $check = UserModel::find($id);
-            if ($check) {
-                if (!$request->filled('password')) { // jika password tidak diisi, maka hapus dari request
-                    $request->request->remove('password');
-                }
-
-                $check->update($request->all());
-                return response()->json([
-                    'status' => true,
-                    'message' => 'Data berhasil diupdate'
-                ]);
-            } else {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Data tidak ditemukan'
-                ]);
-            }
-
-            return redirect('/');
-        }
-    }
+ {
+     // Cek apakah request berasal dari Ajax
+     if ($request->ajax() || $request->wantsJson()) {
+         $rules = [
+             'level_id' => 'required|integer',
+             'username' => 'required|max:20|unique:m_user,username,' . $id . ',user_id',
+             'nama'     => 'required|max:100',
+             'password' => 'nullable|min:6|max:20'
+         ];
+ 
+         // Validasi request
+         $validator = Validator::make($request->all(), $rules);
+ 
+         if ($validator->fails()) {
+             return response()->json([
+                 'status'   => false, // Respon JSON: true = berhasil, false = gagal
+                 'message'  => 'Validasi gagal.',
+                 'msgField' => $validator->errors() // Menunjukkan field mana yang error
+             ]);
+         }
+ 
+         $check = UserModel::find($id);
+         if ($check) {
+             // Jika password tidak diisi hapus dari request
+             if (!$request->filled('password')) {
+                 $request->request->remove('password');
+             }
+ 
+             $check->update($request->all());
+ 
+             return response()->json([
+                 'status'  => true,
+                 'message' => 'Data berhasil diupdate'
+             ]);
+         } else {
+             return response()->json([
+                 'status'  => false,
+                 'message' => 'Data tidak ditemukan'
+             ]);
+         }
+     }
+ 
+     return redirect('/');
+ }
+ 
 }
