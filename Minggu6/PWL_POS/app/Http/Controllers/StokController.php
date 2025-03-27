@@ -3,9 +3,12 @@ namespace App\Http\Controllers;
 
 use App\Models\stokModel;
 use App\Models\BarangModel;
+use App\Models\SupplierModel;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
+
 
 class stokController extends Controller
 {
@@ -34,11 +37,14 @@ class stokController extends Controller
         return DataTables::of($stok)
             ->addIndexColumn()
             ->addColumn('aksi', function ($stok) {
-                $btn = '<a href="' . url('/stok/' . $stok->stok_id) . '" class="btn btn-info btn-sm">Detail</a> ';
-                $btn .= '<a href="' . url('/stok/' . $stok->stok_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
-                $btn .= '<form class="d-inline-block" method="POST" action="' . url('/stok/' . $stok->stok_id) . '">'
-                    . csrf_field() . method_field('DELETE') .
-                    '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>';
+                // $btn = '<a href="' . url('/stok/' . $stok->stok_id) . '" class="btn btn-info btn-sm">Detail</a> ';
+                // $btn .= '<a href="' . url('/stok/' . $stok->stok_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
+                // $btn .= '<form class="d-inline-block" method="POST" action="' . url('/stok/' . $stok->stok_id) . '">'
+                //     . csrf_field() . method_field('DELETE') .
+                //     '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>';
+                $btn = '<button onclick="modalAction(\'' . url('/stok/' . $stok->stok_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/stok/' . $stok->stok_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/stok/' . $stok->stok_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
                 return $btn;
             })
             ->rawColumns(['aksi'])
@@ -47,20 +53,25 @@ class stokController extends Controller
 
     // Menampilkan halaman form tambah stok
     public function create()
-    {
-        $breadcrumb = (object) [
-            'title' => 'Tambah stok',
-            'list' => ['Home', 'stok', 'Tambah']
-        ];
+{
+    $breadcrumb = (object) [
+        'title' => 'Tambah stok',
+        'list' => ['Home', 'stok', 'Tambah']
+    ];
 
-        $page = (object) [
-            'title' => 'Tambah stok baru'
-        ];
+    $page = (object) [
+        'title' => 'Tambah stok baru'
+    ];
 
-        $activeMenu = 'stok';
+    $activeMenu = 'stok';
 
-        return view('stok.create', compact('breadcrumb', 'page', 'barang', 'user', 'activeMenu'));
-    }
+    // Ambil data barang dari database
+    $barang = BarangModel::all();  // Pastikan model Barang sudah di-import
+    $user = UserModel::all();  // Jika user juga digunakan, pastikan data tersedia
+
+    return view('stok.create', compact('breadcrumb', 'page', 'barang', 'user', 'activeMenu'));
+}
+
 
     // Menyimpan data stok baru
     public function store(Request $request)

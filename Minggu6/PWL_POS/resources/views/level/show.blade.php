@@ -13,20 +13,20 @@
                 Data yang Anda cari tidak ditemukan.
             </div>
         @else
-            <table class="table table-bordered table-striped table-hover table-sm">
-                <tr>
-                    <th>ID</th>
-                    <td>{{ $level->level_id }}</td>
-                </tr>
-                <tr>
-                    <th>Kode Level</th>
-                    <td>{{ $level->level_kode }}</td>
-                </tr>
-                <tr>
-                    <th>Nama Level</th>
-                    <td>{{ $level->level_nama }}</td>
-                </tr>
-            </table>
+        <table class="table table-bordered table-striped table-hover table-sm">
+            <tr>
+                <th>ID</th>
+                <td>{{ $level->level_id }}</td>
+            </tr>
+            <tr>
+                <th>Kode Level</th>
+                <td>{{ $level->level_kode }}</td>
+            </tr>
+            <tr>
+                <th>Nama Level</th>
+                <td>{{ $level->level_nama }}</td>
+            </tr>
+        </table>
         @endempty
         <a href="{{ url('/level') }}" class="btn btn-sm btn-default mt-2">Kembali</a>
     </div>

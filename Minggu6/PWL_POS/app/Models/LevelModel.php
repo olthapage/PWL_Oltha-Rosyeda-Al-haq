@@ -13,7 +13,8 @@ class LevelModel extends Model
     use HasFactory;
     protected $table = 'm_level';
     protected $primaryKey = 'level_id';
-
+    public $timestamps = false; 
+    
     // Daftar atribut yang dapat diisi melalui mass assignment
     protected $fillable = ['level_kode', 'level_nama'];
 

@@ -12,6 +12,7 @@ class SupplierModel extends Model
 
     protected $table = 'm_supplier'; // Nama tabel
     protected $primaryKey = 'supplier_id'; // Primary key
+    public $timestamps = false;
 
     // Daftar atribut yang dapat diisi melalui mass assignment
     protected $fillable = ['supplier_kode', 'supplier_nama', 'supplier_alamat'];
