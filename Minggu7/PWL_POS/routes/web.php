@@ -8,6 +8,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\StokController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\AuthController; 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /*
 |--------------------------------------------------------------------------
@@ -131,4 +133,17 @@ Route::group(['prefix' => 'supplier'], function () {
     Route::delete('/{id}', [SupplierController::class, 'destroy']); 
     Route::get('/{id}/delete_ajax', [SupplierController::class, 'confirm_ajax']); 
     Route::delete('/{id}/delete_ajax', [SupplierController::class, 'delete_ajax']); 
+});
+// praktikum 7
+Route::pattern('id', '[0-9]+'); // artinya ketika ada parameter {id}, maka harus berupa angka
+
+
+Route::get('login', [AuthController::class, 'login'])->name('login');
+Route::post('login', [AuthController::class, 'postlogin']);
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth');
+
+Route::middleware(['auth'])->group(function() { // artinya semua route di dalam group ini harus login dulu
+
+    Route::get('/', [WelcomeController::class, 'index']);
+    // masukkan semua route yang perlu autentikasi di sini
 });
