@@ -136,7 +136,7 @@ Route::group(['prefix' => 'supplier'], function () {
     Route::delete('/{id}/delete_ajax', [SupplierController::class, 'delete_ajax']); 
 });
 
-// jobsheet 7
+// jobsheet 7 dan 8
 Route::pattern('id', '[0-9]+'); // artinya ketika ada parameter {id}, maka harus berupa angka
 
 Route::get('login', [AuthController::class, 'login'])->name('login');
@@ -186,6 +186,8 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
             Route::delete('/{id}', [BarangController::class, 'destroy']); 
             Route::get('/{id}/delete_ajax', [BarangController::class, 'confirm_ajax']); 
             Route::delete('/{id}/delete_ajax', [BarangController::class, 'delete_ajax']); 
+            Route::get('/import', [BarangController::class, 'import']); // ajax form upload excel
+            Route::post('/import_ajax', [BarangController::class, 'import_ajax']); // ajax import excel
         });
     });
 
@@ -258,3 +260,4 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
         });
     });
 });
+

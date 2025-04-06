@@ -1,11 +1,15 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\LevelModel;
 use App\Models\BarangModel;
-use Yajra\DataTables\Facades\DataTables;
-use App\Models\KategoriModel; 
+use App\Models\KategoriModel;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Yajra\DataTables\Facades\DataTables;
 
 class BarangController extends Controller
 {
@@ -21,16 +25,21 @@ class BarangController extends Controller
             'title' => 'Daftar barang yang tersedia dalam sistem'
         ];
 
-        $activeMenu = 'barang'; 
+        $activeMenu = 'barang';
         $kategori = KategoriModel::all();
 
-        return view('barang.index', ['breadcrumb' => $breadcrumb, 'page' => $page,'kategori' => $kategori, 'activeMenu' => $activeMenu]);
+        return view('barang.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'kategori' => $kategori, 'activeMenu' => $activeMenu]);
     }
 
     // Ambil data barang dalam bentuk json untuk datatables
     public function list(Request $request)
     {
         $barangs = BarangModel::select('barang_id', 'kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')->with('kategori');
+
+        $kategori_id = $request->input('filter_kategori');
+        if (!empty($kategori_id)) {
+            $barangs->where('kategori_id', $kategori_id);
+        }
 
         return DataTables::of($barangs)
             ->addIndexColumn()
@@ -162,10 +171,14 @@ class BarangController extends Controller
             $rules = [
                 'barang_kode'  => 'required|string|max:50|unique:m_barang,barang_kode',
                 'barang_nama'  => 'required|string|max:100',
-                'kategori_id' => 'required|integer',
+                'kategori_id' => 'required',
+                'integer',
+                'exists:m_kategori,kategori_id',
                 'supplier_alamat' => 'nullable|string|max:255',
-                'harga_beli'  => 'required|string|max:100',
-                'harga_jual'  => 'required|string|max:100',
+                'harga_beli' => 'required',
+                'numeric',
+                'harga_jual' => 'required',
+                'numeric',
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -179,7 +192,6 @@ class BarangController extends Controller
             }
 
             BarangModel::create($request->all());
-
             return response()->json([
                 'status'  => true,
                 'message' => 'Data barang berhasil disimpan.',
@@ -193,10 +205,12 @@ class BarangController extends Controller
     {
         $barang = BarangModel::find($id);
         $kategori = KategoriModel::select('kategori_id', 'kategori_nama')->get();
+        $level = LevelModel::select('level_id', 'level_nama')->get();
 
         return view('barang.edit_ajax', [
             'barang'   => $barang,
             'kategori' => $kategori,
+            'level' => $level,
         ]);
     }
 
@@ -267,6 +281,61 @@ class BarangController extends Controller
 
         return redirect('/');
     }
-}
+    public function import()
+    {
+        return view('barang.import');
+    }
+    public function import_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = ['file_barang' => ['required', 'mimes:xlsx', 'max:1024']];
+            $validator = Validator::make($request->all(), $rules);
 
+            if ($validator->fails()) {
+                return response()->json([
+                    'status'    => false,
+                    'message'   => 'Validasi Gagal',
+                    'msgField'  => $validator->errors()
+                ]);
+            }
+
+            $file = $request->file('file_barang');
+            $reader = IOFactory::createReader('Xlsx');
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+            $data = $sheet->toArray(null, false, true, true);
+            $insert = [];
+
+            if (count($data) > 1) {
+                foreach ($data as $baris => $value) {
+                    if ($baris > 1) {
+                        $insert[] = [
+                            'kategori_id' => $value['A'],
+                            'barang_kode' => $value['B'],
+                            'barang_nama' => $value['C'],
+                            'harga_beli'  => $value['D'],
+                            'harga_jual'  => $value['E'],
+                            'created_at'  => now()
+                        ];
+                    }
+                }
+                if (count($insert) > 0) {
+                    BarangModel::insertOrIgnore($insert);
+                }
+                return response()->json([
+                    'status'  => true,
+                    'message' => 'Data berhasil diimport'
+                ]);
+            } else {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Tidak ada data yang diimport'
+                ]);
+            }
+        }
+
+        return redirect('/');
+    }
+}
 
