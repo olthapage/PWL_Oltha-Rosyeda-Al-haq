@@ -337,5 +337,62 @@ class BarangController extends Controller
 
         return redirect('/');
     }
+    public function export_excel()
+    {
+        // ambil data barang yang akan di export
+        // Kita ambil data barang yang akan kita export ke excel (tentu dengan menyertakan relasi kategori barang)
+        $barang = BarangModel::select('kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')->orderBy('kategori_id')->with('kategori')->get();
+
+        // load library excel
+        // Kemudian kita load library Spreadsheet dan kita tentukan header data pada baris pertama di excel
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet(); // ambil yang active
+
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Kode Barang');
+        $sheet->setCellValue('C1', 'Nama Barang');
+        $sheet->setCellValue('D1', 'Harga Beli');
+        $sheet->setCellValue('E1', 'Harga Jual');
+        $sheet->setCellValue('F1', 'Kategori');
+
+        $sheet->getStyle('A1:F1')->getFont()->setBold(true); // bold header
+
+        // Selanjutnya, kita looping data yang telah kita dapatkan dari database, kemudian kita masukkan ke dalam cell excel
+        $no = 1;
+        $baris = 2;
+        foreach ($barang as $key => $value) {
+            $sheet->setCellValue('A'.$baris, $no);
+            $sheet->setCellValue('B'.$baris, $value->barang_kode);
+            $sheet->setCellValue('C'.$baris, $value->barang_nama);
+            $sheet->setCellValue('D'.$baris, $value->harga_beli);
+            $sheet->setCellValue('E'.$baris, $value->harga_jual);
+            $sheet->setCellValue('F'.$baris, $value->kategori->kategori_nama); // ambil nama kategori
+            $baris++;
+            $no++;
+        }
+
+        // Kita set lebar tiap kolom di excel untuk menyesuaikan dengan panjang karakter pada masing-masing kolom
+        foreach(range('A', 'F') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true); // set auto size kolom
+        }
+
+        // Bagian akhir proses export excel adalah kita set nama sheet, dan proses untuk dapat di download oleh pengguna
+        $sheet->setTitle('Data Barang'); // set title sheet
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $filename = 'Data Barang '.date('Y-m-d H:i:s').'.xlsx';
+        
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="'.$filename.'"');
+        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+        
+        $writer->save('php://output');
+        exit;
+        } // end function export_excel
 }
 
