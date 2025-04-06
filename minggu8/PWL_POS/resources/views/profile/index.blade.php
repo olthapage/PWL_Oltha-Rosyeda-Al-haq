@@ -19,7 +19,7 @@
         <div class="row">
             <div class="col-md-3 text-center">
                 @if($user->foto)
-                    <img src="{{ asset('storage/' . $user->foto) }}" width="150" class="img-thumbnail mb-2">
+                    <img src="{{ asset('storage/' . $user->foto) }}" width="235" class="img-thumbnail mb-1">
                 @else
                     <p class="text-muted">Belum ada foto</p>
                 @endif

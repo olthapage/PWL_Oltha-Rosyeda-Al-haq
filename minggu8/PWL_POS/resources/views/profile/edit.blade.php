@@ -31,7 +31,14 @@
                 <small class="form-text text-muted">Format: jpeg, png, jpg, gif. Maks: 2MB</small>
             </div>
 
-            <button type="submit" class="btn btn-primary mt-2"><i class="fa fa-save"></i> Simpan</button>
+            <div class="d-flex gap-2">
+                <a href="{{ url('profile') }}" class="btn btn-secondary mt-2">
+                    <i class="fa fa-arrow-left"></i> Kembali
+                </a>
+                <button type="submit" class="btn btn-primary mt-2">
+                    <i class="fa fa-save"></i> Simpan
+                </button>
+            </div>
         </form>
     </div>
 </div>
