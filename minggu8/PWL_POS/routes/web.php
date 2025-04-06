@@ -11,6 +11,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AuthController; 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -146,6 +147,14 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware('auth');
 // Route register 
 Route::get('/register', [RegisterController::class, 'register'])->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
+
+// Route profile
+// Route untuk menampilkan profil
+Route::get('/profile', [ProfileController::class, 'index'])->middleware('auth');
+// Route untuk halaman edit foto
+Route::get('/profile/edit', [ProfileController::class, 'edit'])->middleware('auth');
+// Route untuk meng-handle upload foto
+Route::post('/profile', [ProfileController::class, 'upload'])->middleware('auth');
 
 Route::middleware(['auth'])->group(function() { // artinya semua route di dalam group ini harus login dulu
     Route::get('/', [WelcomeController::class, 'index']);
