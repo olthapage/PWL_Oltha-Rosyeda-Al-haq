@@ -8,6 +8,7 @@
             <button onclick="modalAction('{{ url('user/import') }}')" class="btn btn-sm btn-secondary">Import User</button>
             {{-- <a class="btn btn-sm btn-primary mt-1" href="{{ url('user/create') }}">Tambah</a> --}}
             <a href="{{ url('user/export_excel') }}" class="btn btn-primary btn-sm"><i class="fa fa-fileexcel"></i> Export User (excel)</a>
+            <a href="{{ url('user/export_pdf') }}" class="btn btn-warning btn-sm"><i class="fa fa-filepdf"></i> Export User (pdf)</a>
             <button onclick="modalAction('{{ url('user/create_ajax') }}')" class="btn btn-sm btn-success">Tambah Ajax</button>
         </div>
     </div>
