@@ -21,8 +21,8 @@
         // UserModel::where('username', 'customer-1')->update($data); // update data user
 
         //  //coba akses model UserModel
-        //  $user = UserModel::all(); // ambil semua data dari tabel m_user
-        //  return view('user', ['data' => $user]);
+         $user = UserModel::all(); // ambil semua data dari tabel m_user
+         return view('user', ['data' => $user]);
 
     // implementasi POS jobsheet 4
         // $data = [
@@ -38,19 +38,19 @@
         // $user = UserModel::findOr(1, ['username', 'nama'], function() {
         //     abort(404);
         // }); 
-        $user = UserModel::firstOrCreate(
-            [
-                'username' => 'admin3',
-                'nama' => 'Rayhan Admin 3',
-                'password' => Hash::make('admin3'),
-                'level_id' => 1
-            ],
-        );
+        // $user = UserModel::firstOrCreate(
+        //     [
+        //         'username' => 'admin3',
+        //         'nama' => 'Rayhan Admin 3',
+        //         'password' => Hash::make('admin3'),
+        //         'level_id' => 1
+        //     ],
+        // );
         // $user->save();
         // $user = UserModel::where('level_id', 2)->count();
         // dd($user);
         // return view('user', ['data' => $user]);
-         $user->username = 'admin4';
+        //  $user->username = 'admin4';
          
         //  $user->isDirty(); //true
         //  $user->isDirty('username'); //true
@@ -62,12 +62,48 @@
         //  $user->isClean('nama'); // true
         //  $user->isClean(['nama', 'username']); //false
  
-         $user->save();
+        //  $user->save();
 
-         $user->wasChanged(); // true
-         $user->wasChanged('username'); // true
-         $user->wasChanged(['username', 'level_id']); // true
-         $user->wasChanged('nama'); // false
-         dd($user->wasChanged(['nama', 'username']));
+        //  $user->wasChanged(); // true
+        //  $user->wasChanged('username'); // true
+        //  $user->wasChanged(['username', 'level_id']); // true
+        //  $user->wasChanged('nama'); // false
+        //  dd($user->wasChanged(['nama', 'username']));
+    }
+    public function tambah() {
+        return view('user_tambah');
+    }
+    public function tambah_simpan(Request $request) {
+        UserModel::create([
+            'username' => $request->username,
+            'nama' => $request->nama,
+            'password' => Hash::make('$request->password'),
+            'level_id' => $request->level_id
+        ]);
+
+        return redirect('/user');
+    }
+    public function ubah($id) {
+        $user = UserModel::find($id);
+        return view('user_ubah', ['data' => $user]);
+    }
+    public function ubah_simpan($id, Request $request) {
+        $user = UserModel::find($id);
+
+        $user->username = $request->username;
+        $user->nama = $request->nama;
+        $user->password = Hash::make('$request->password');
+        $user->level_id= $request->level_id;
+
+        
+        $user->save();
+
+        return redirect('/user');
+    }
+    public function hapus($id) {
+        $user = UserModel::find($id);
+        $user->delete();
+
+        return redirect('/user');
     }
  }
