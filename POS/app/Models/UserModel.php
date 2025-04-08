@@ -13,5 +13,5 @@
     protected $primaryKey = 'user_id'; // mendefinisikan primary key dari tabel yang digunakan
 
     // implementasi POS jobsheet 4
-    protected $fillable = ['level_id', 'username', 'nama'];
+    protected $fillable = ['username', 'nama', 'password', 'level_id'];
  }
