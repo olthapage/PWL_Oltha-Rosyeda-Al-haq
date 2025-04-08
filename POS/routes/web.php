@@ -5,6 +5,16 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SalesController;
+use App\Http\Controllers\LevelController;
+use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\BarangController;
+use App\Http\Controllers\StokController;
+use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\AuthController; 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,5 +44,13 @@ Route::prefix('category')->group(function () {
 Route::get('/user/{id}/name/{name}', [UserController::class, 'show']); 
 // halaman sales
 Route::get('/sales', [SalesController::class, 'sales']); 
+
+// implementasi POS jobsheet 3 
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/level', [LevelController::class, 'index']);
+
 
 
