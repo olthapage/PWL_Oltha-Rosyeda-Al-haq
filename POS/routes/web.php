@@ -58,9 +58,11 @@ Route::get('/user', [UserController::class, 'index']);
 Route::get('/barang', [BarangController::class, 'index']);
 Route::get('/penjualan', [PenjualanController::class, 'index']);
 Route::get('/stok', [StokController::class, 'index']);
-Route::get('/penjualandetail', [PenjualanDetailController::class, 'index']);
 
 // implementasi POS jobsheet 4
+Route::get('/penjualanDetail', [PenjualanDetailController::class, 'index']);
+Route::post('/penjualanDetail/list', [PenjualanDetailController::class, 'list']);
+
 Route::get('/user/tambah', [UserController::class, 'tambah']);
 Route::post('/user/tambah_simpan', [UserController::class, 'tambah_simpan']);
 Route::get('/user/ubah/{id}', [UserController::class, 'ubah']);
@@ -90,12 +92,6 @@ Route::post('/penjualan/tambah_simpan', [PenjualanController::class, 'tambah_sim
 Route::get('/penjualan/ubah/{id}', [PenjualanController::class, 'ubah']);
 Route::put('/penjualan/ubah_simpan/{id}', [PenjualanController::class, 'ubah_simpan']);
 Route::get('/penjualan/hapus/{id}', [PenjualanController::class, 'hapus']);
-
-Route::get('/penjualanDetail/tambah', [PenjualanDetailController::class, 'tambah']);
-Route::post('/penjualanDetail/tambah_simpan', [PenjualanDetailController::class, 'tambah_simpan']);
-Route::get('/penjualanDetail/ubah/{id}', [PenjualanDetailController::class, 'ubah']);
-Route::put('/penjualanDetail/ubah_simpan/{id}', [PenjualanDetailController::class, 'ubah_simpan']);
-Route::get('/penjualanDetail/hapus/{id}', [PenjualanDetailController::class, 'hapus']);
 
 Route::get('/stok/tambah', [StokController::class, 'tambah']);
 Route::post('/stok/tambah_simpan', [StokController::class, 'tambah_simpan']);

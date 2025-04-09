@@ -45,6 +45,11 @@
                 </tr>
             </thead>
         </table>
+        <div class="mt-3 text-end">
+            <a href="{{ url('/penjualanDetail') }}" class="btn btn-primary btn-sm">
+                <i class="fas fa-eye"></i> Lihat Detail Penjualan
+            </a>
+        </div>        
     </div>
 </div>
 @endsection
