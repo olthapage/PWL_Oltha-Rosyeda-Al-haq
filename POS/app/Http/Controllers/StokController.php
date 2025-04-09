@@ -8,6 +8,7 @@ use App\Models\UserModel;
 use App\Models\SupplierModel;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
 
 class stokController extends Controller
 {
@@ -108,26 +109,26 @@ class stokController extends Controller
     public function edit(string $id)
     {
         $stok = stokModel::find($id);
-    
+
         if (!$stok) {
             return redirect('/stok')->with('error', 'Data tidak ditemukan.');
         }
-    
+
         $supplier = SupplierModel::all();
         $barang = BarangModel::all();
         $user = UserModel::all();
-    
+
         $breadcrumb = (object) [
             'title' => 'Edit stok',
             'list' => ['Home', 'stok', 'Edit']
         ];
-    
+
         $page = (object) [
             'title' => 'Edit stok'
         ];
-    
+
         $activeMenu = 'stok';
-    
+
         return view('stok.edit', [
             'breadcrumb' => $breadcrumb,
             'page' => $page,
@@ -138,7 +139,7 @@ class stokController extends Controller
             'activeMenu' => $activeMenu
         ]);
     }
-    
+
 
     // Menyimpan perubahan data stok
     public function update(Request $request, string $id)
@@ -171,5 +172,130 @@ class stokController extends Controller
         } catch (\Illuminate\Database\QueryException $e) {
             return redirect('/stok')->with('error', 'Data stok gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
         }
+    }
+    public function create_ajax()
+    {
+        $barang = BarangModel::all();
+        $user = UserModel::all();
+        $supplier = SupplierModel::all();
+
+        return view('stok.create_ajax', compact('barang', 'user', 'supplier'));
+    }
+
+    // Simpan data stok via AJAX
+    public function store_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'stok_id' => 'required|integer',
+                'barang_id' => 'required|integer',
+                'user_id' => 'required|integer',
+                'stok_tanggal' => 'required|date',
+                'stok_jumlah' => 'required|integer|min:1',
+                'supplier_id' => 'required|integer',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi gagal.',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            stokModel::create($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Data stok berhasil disimpan'
+            ]);
+        }
+
+        return redirect('/');
+    }
+
+    // Edit data stok via AJAX
+    public function edit_ajax(string $id)
+    {
+        $stok = stokModel::find($id);
+        $barang = BarangModel::all();
+        $user = UserModel::all();
+        $supplier = SupplierModel::all();
+
+        return view('stok.edit_ajax', compact('stok', 'barang', 'user', 'supplier'));
+    }
+
+    // Update data stok via AJAX
+    public function update_ajax(Request $request, string $id)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'stok_id' => 'required|integer',
+                'barang_id' => 'required|integer',
+                'user_id' => 'required|integer',
+                'stok_tanggal' => 'required|date',
+                'stok_jumlah' => 'required|integer|min:1',
+                'supplier_id' => 'required|integer',
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi gagal.',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $stok = stokModel::find($id);
+            if ($stok) {
+                $stok->update($request->all());
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data stok berhasil diupdate'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data stok tidak ditemukan'
+                ]);
+            }
+        }
+
+        return redirect('/');
+    }
+
+    // Konfirmasi hapus stok (tampilkan modal atau halaman)
+    public function confirm_ajax(string $id)
+    {
+        $stok = stokModel::find($id);
+
+        return view('stok.confirm_ajax', compact('stok'));
+    }
+
+    // Hapus data stok via AJAX
+    public function delete_ajax(Request $request, string $id)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $stok = stokModel::find($id);
+            if ($stok) {
+                $stok->delete();
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data stok berhasil dihapus'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data stok tidak ditemukan'
+                ]);
+            }
+        }
+
+        return redirect('/');
     }
 }

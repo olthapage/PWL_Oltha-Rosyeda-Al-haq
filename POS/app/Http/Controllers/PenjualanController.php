@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
 
 // implementasi POS jobsheet 5
 class PenjualanController extends Controller
@@ -161,8 +162,123 @@ class PenjualanController extends Controller
             return redirect('/penjualan')->with('error', 'Data penjualan gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini');
         }
     }
-}
+    public function create_ajax()
+    {
+        $user = UserModel::all();
+        return view('penjualan.create_ajax', compact('user'));
+    }
 
+    // Simpan data penjualan via AJAX
+    public function store_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'user_id' => 'required|integer',
+                'pembeli' => 'required|string|max:255',
+                'penjualan_kode' => 'required|string|max:100',
+                'penjualan_tanggal' => 'required|date'
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi gagal.',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            PenjualanModel::create($request->all());
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data penjualan berhasil disimpan'
+            ]);
+        }
+
+        return redirect('/');
+    }
+
+    // Tampilkan form edit penjualan via AJAX
+    public function edit_ajax(string $id)
+    {
+        $penjualan = PenjualanModel::find($id);
+        $user = UserModel::all();
+
+        return view('penjualan.edit_ajax', compact('penjualan', 'user'));
+    }
+
+    // Update data penjualan via AJAX
+    public function update_ajax(Request $request, string $id)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'user_id' => 'required|integer',
+                'pembeli' => 'required|string|max:255',
+                'penjualan_kode' => 'required|string|max:100',
+                'penjualan_tanggal' => 'required|date'
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi gagal.',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $penjualan = PenjualanModel::find($id);
+            if ($penjualan) {
+                $penjualan->update($request->all());
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data penjualan berhasil diperbarui'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data penjualan tidak ditemukan'
+                ]);
+            }
+        }
+
+        return redirect('/');
+    }
+
+    // Konfirmasi hapus data penjualan (opsional: untuk modal AJAX)
+    public function confirm_ajax(string $id)
+    {
+        $penjualan = PenjualanModel::find($id);
+        return view('penjualan.confirm_ajax', compact('penjualan'));
+    }
+
+    // Hapus data penjualan via AJAX
+    public function delete_ajax(Request $request, string $id)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $penjualan = PenjualanModel::find($id);
+            if ($penjualan) {
+                $penjualan->delete();
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data penjualan berhasil dihapus'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data penjualan tidak ditemukan'
+                ]);
+            }
+        }
+
+        return redirect('/');
+    }
+}
 
 // implementasi POS jobsheet 4
 // class PenjualanController extends Controller

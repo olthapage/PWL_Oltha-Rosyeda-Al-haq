@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\LevelModel;
 use App\Models\UserModel;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Validator;
 
 //implementasi josbheet 5
 class LevelController extends Controller
@@ -193,6 +194,112 @@ class LevelController extends Controller
             // Tangkap error jika ada relasi dengan tabel lain
             return redirect('/level')->with('error', 'Data level gagal dihapus karena masih terdapat tabel lain yang terkait dengan data ini.');
         }
+    }
+    public function create_ajax()
+    {
+        $level = LevelModel::select('level_id', 'level_nama')->get();
+        return view('level.create_ajax', ['level' => $level]);
+    }
+
+    public function store_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'level_kode' => 'required|string|max:10|unique:m_level,level_kode',
+                'level_nama' => 'required|string|max:50'
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi gagal.',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            LevelModel::create($request->all());
+            return response()->json([
+                'status' => true,
+                'message' => 'Data level berhasil disimpan'
+            ]);
+        }
+
+        return redirect('/');
+    }
+
+    public function edit_ajax(string $id)
+    {
+        $level = LevelModel::find($id);
+
+        return view('level.edit_ajax', ['level' => $level]);
+    }
+
+    public function update_ajax(Request $request, string $id)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = [
+                'level_kode' => 'required|string|max:10|unique:m_level,level_kode,' . $id . ',level_id',
+                'level_nama' => 'required|string|max:50'
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Validasi gagal.',
+                    'msgField' => $validator->errors()
+                ]);
+            }
+
+            $level = LevelModel::find($id);
+            if ($level) {
+                $level->update($request->all());
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data level berhasil diupdate'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data level tidak ditemukan'
+                ]);
+            }
+        }
+
+        return redirect('/');
+    }
+
+    public function confirm_ajax(string $id)
+    {
+        $level = LevelModel::find($id);
+
+        return view('level.confirm_ajax', ['level' => $level]);
+    }
+
+    public function delete_ajax(Request $request, string $id)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $level = LevelModel::find($id);
+            if ($level) {
+                $level->delete();
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Data level berhasil dihapus'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Data level tidak ditemukan'
+                ]);
+            }
+        }
+
+        return redirect('/');
     }
 }
 
