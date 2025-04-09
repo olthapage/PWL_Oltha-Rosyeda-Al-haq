@@ -1,11 +1,11 @@
-
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\BarangModel;
 use Yajra\DataTables\Facades\DataTables;
-use App\Models\KategoriModel; 
+use App\Models\KategoriModel;
 
 class BarangController extends Controller
 {
@@ -21,19 +21,28 @@ class BarangController extends Controller
             'title' => 'Daftar barang yang tersedia dalam sistem'
         ];
 
-        $activeMenu = 'barang'; 
+        $activeMenu = 'barang';
         $kategori = KategoriModel::all();
 
-        return view('barang.index', ['breadcrumb' => $breadcrumb, 'page' => $page,'kategori' => $kategori, 'activeMenu' => $activeMenu]);
+        return view('barang.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'kategori' => $kategori, 'activeMenu' => $activeMenu]);
     }
 
     // Ambil data barang dalam bentuk json untuk datatables
     public function list(Request $request)
     {
-        $barangs = BarangModel::select('barang_id', 'kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')->with('kategori');
+        $barangs = BarangModel::select('barang_id', 'kategori_id', 'barang_kode', 'barang_nama', 'harga_beli', 'harga_jual')
+            ->with('kategori');
+
+        $kategori_id = $request->input('filter_kategori');
+        if (!empty($kategori_id)) {
+            $barangs->where('kategori_id', $kategori_id);
+        }
 
         return DataTables::of($barangs)
             ->addIndexColumn()
+            ->addColumn('kategori_nama', function ($barang) {
+                return $barang->kategori->kategori_nama ?? '-';
+            })
             ->addColumn('aksi', function ($barang) {
                 $btn = '<a href="' . url('/barang/' . $barang->barang_id) . '" class="btn btn-info btn-sm">Detail</a> ';
                 $btn .= '<a href="' . url('/barang/' . $barang->barang_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
@@ -45,6 +54,7 @@ class BarangController extends Controller
             ->rawColumns(['aksi'])
             ->make(true);
     }
+
 
     // Menampilkan halaman form tambah barang
     public function create()
@@ -101,6 +111,7 @@ class BarangController extends Controller
     public function edit(string $id)
     {
         $barang = BarangModel::find($id);
+        $kategori = KategoriModel::all();
 
         $breadcrumb = (object) [
             'title' => 'Edit Barang',
@@ -113,7 +124,13 @@ class BarangController extends Controller
 
         $activeMenu = 'barang';
 
-        return view('barang.edit', ['breadcrumb' => $breadcrumb, 'page' => $page, 'barang' => $barang, 'activeMenu' => $activeMenu]);
+        return view('barang.edit', [
+            'breadcrumb' => $breadcrumb,
+            'page' => $page,
+            'barang' => $barang,
+            'kategori' => $kategori,
+            'activeMenu' => $activeMenu
+        ]);
     }
 
     // Menyimpan perubahan data barang

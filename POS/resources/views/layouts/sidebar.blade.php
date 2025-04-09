@@ -64,7 +64,6 @@
               <p>Data Supplier</p>
           </a>
         </li>
-      
       </ul>
     </nav>
   </div>

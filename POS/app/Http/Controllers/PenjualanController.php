@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PenjualanModel;
+use Illuminate\Support\Facades\DB;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -12,39 +13,51 @@ class PenjualanController extends Controller
 {
     // Menampilkan halaman awal penjualan
     public function index()
-    {
-        $breadcrumb = (object) [
-            'title' => 'Data Penjualan',
-            'list' => ['Home', 'Penjualan']
-        ];
+{
+    $breadcrumb = (object) [
+        'title' => 'Data Penjualan',
+        'list' => ['Home', 'Penjualan']
+    ];
 
-        $page = (object) [
-            'title' => 'Daftar penjualan yang tercatat dalam sistem'
-        ];
+    $page = (object) [
+        'title' => 'Daftar penjualan yang tercatat dalam sistem'
+    ];
 
-        $activeMenu = 'penjualan';
+    $activeMenu = 'penjualan';
 
-        return view('penjualan.index', compact('breadcrumb', 'page', 'activeMenu'));
-    }
+    // $penjualan = PenjualanModel::select('penjualan_tanggal')->distinct()->get();
+    $penjualan = DB::table('t_penjualan')
+        ->select(DB::raw('DATE(penjualan_tanggal) as tanggal'))
+        ->distinct()
+        ->orderBy('tanggal', 'desc')
+        ->get();
+
+    return view('penjualan.index', compact('breadcrumb', 'page', 'activeMenu', 'penjualan'));
+}
 
     // Ambil data penjualan dalam bentuk JSON untuk DataTables
     public function list(Request $request)
-    {
-        $penjualan = PenjualanModel::select('penjualan_id', 'user_id', 'pembeli', 'penjualan_kode', 'penjualan_tanggal');
+{
+    $penjualan = PenjualanModel::with('user')
+        ->select('penjualan_id', 'user_id', 'pembeli', 'penjualan_kode', 'penjualan_tanggal');
 
-        return DataTables::of($penjualan)
-            ->addIndexColumn()
-            ->addColumn('aksi', function ($penjualan) {
-                $btn = '<a href="' . url('/penjualan/' . $penjualan->penjualan_id) . '" class="btn btn-info btn-sm">Detail</a> ';
-                $btn .= '<a href="' . url('/penjualan/' . $penjualan->penjualan_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
-                $btn .= '<form class="d-inline-block" method="POST" action="' . url('/penjualan/' . $penjualan->penjualan_id) . '">' .
-                    csrf_field() . method_field('DELETE') .
-                    '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>';
-                return $btn;
-            })
-            ->rawColumns(['aksi'])
-            ->make(true);
-    }
+    return DataTables::of($penjualan)
+        ->addIndexColumn()
+        ->addColumn('nama', function ($penjualan) {
+            return $penjualan->user->nama ?? '-';
+        })
+        ->addColumn('aksi', function ($penjualan) {
+            $btn = '<a href="' . url('/penjualan/' . $penjualan->penjualan_id) . '" class="btn btn-info btn-sm">Detail</a> ';
+            $btn .= '<a href="' . url('/penjualan/' . $penjualan->penjualan_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
+            $btn .= '<form class="d-inline-block" method="POST" action="' . url('/penjualan/' . $penjualan->penjualan_id) . '">' .
+                csrf_field() . method_field('DELETE') .
+                '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button></form>';
+            return $btn;
+        })
+        ->rawColumns(['aksi'])
+        ->make(true);
+}
+
 
     // Menampilkan halaman form tambah penjualan
     public function create()
