@@ -52,12 +52,15 @@ class LevelController extends Controller
             ->addIndexColumn() // Menambahkan nomor urut
             ->addColumn('aksi', function ($row) {
                 // Tambahkan tombol Detail, Edit, dan Hapus
-                $btn = '<a href="' . url('level/' . $row->level_id) . '" class="btn btn-info btn-sm">Detail</a> ';
-                $btn .= '<a href="' . url('level/' . $row->level_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
-                $btn .= '<form action="' . url('level/' . $row->level_id) . '" method="POST" style="display:inline-block;">
-                        ' . csrf_field() . method_field('DELETE') . '
-                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Yakin ingin menghapus data ini?\')">Hapus</button>
-                     </form>';
+                // $btn = '<a href="' . url('level/' . $row->level_id) . '" class="btn btn-info btn-sm">Detail</a> ';
+                // $btn .= '<a href="' . url('level/' . $row->level_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
+                // $btn .= '<form action="' . url('level/' . $row->level_id) . '" method="POST" style="display:inline-block;">
+                //         ' . csrf_field() . method_field('DELETE') . '
+                //         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Yakin ingin menghapus data ini?\')">Hapus</button>
+                //      </form>';
+                $btn = '<button onclick="modalAction(\'' . url('/level/' . $row->level_id . '/show_ajax') . '\')" class="btn btn-info btn-sm">Detail</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/level/' . $row->level_id . '/edit_ajax') . '\')" class="btn btn-warning btn-sm">Edit</button> ';
+                $btn .= '<button onclick="modalAction(\'' . url('/level/' . $row->level_id . '/delete_ajax') . '\')" class="btn btn-danger btn-sm">Hapus</button> ';
                 return $btn;
             })
             ->rawColumns(['aksi']) // Beri tahu DataTables bahwa kolom "aksi" adalah HTML
