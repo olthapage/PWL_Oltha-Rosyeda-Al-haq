@@ -109,6 +109,10 @@ Route::get('/supplier/ubah/{id}', [SupplierController::class, 'ubah']);
 Route::put('/supplier/ubah_simpan/{id}', [SupplierController::class, 'ubah_simpan']);
 Route::get('/supplier/hapus/{id}', [SupplierController::class, 'hapus']);
 
+// implemetasi POS jobsheet 5
+
+Route::get('/', [WelcomeController::class, 'index']);
+
 
 
 
