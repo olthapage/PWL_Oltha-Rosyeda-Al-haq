@@ -13,10 +13,10 @@ use App\Http\Controllers\StokController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AuthController; 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\PenjualanDetailController;
+use App\Http\Controllers\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
