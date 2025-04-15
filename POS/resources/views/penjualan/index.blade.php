@@ -5,6 +5,7 @@
     <div class="card-header">
         <h3 class="card-title">{{ $page->title }}</h3>
         <div class="card-tools">
+            <button onclick="modalAction('{{ url('penjualan/import') }}')" class="btn btn-sm btn-secondary">Import Penjualan</button>
             <a class="btn btn-sm btn-primary mt-1" href="{{ url('penjualan/create') }}">Tambah</a>
             <button onclick="modalAction('{{ url('penjualan/create_ajax') }}')" class="btn btn-sm btn-success">Tambah Ajax</button>
         </div>
@@ -38,10 +39,10 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Kode</th>
+                    <th>User kasir</th>
                     <th>Pembeli</th>
+                    <th>Kode</th>
                     <th>Tanggal</th>
-                    <th>User</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -82,10 +83,10 @@ $(document).ready(function() {
         },
         columns: [
             { data: "penjualan_id", className: "text-center" },
-            { data: "penjualan_kode" },
-            { data: "pembeli" },
-            { data: "penjualan_tanggal" },
             { data: "nama" }, 
+            { data: "pembeli" },
+            { data: "penjualan_kode" },
+            { data: "penjualan_tanggal" },
             { data: "aksi", orderable: false, searchable: false, className: "text-center" }
         ]
     });

@@ -46,7 +46,7 @@
                     <select name="user_id" class="form-control" required>
                         <option value="">-- Pilih User --</option>
                         @foreach($user as $u)
-                            <option value="{{ $u->id }}" {{ $penjualan->user_id == $u->id ? 'selected' : '' }}>{{ $u->name }}</option>
+                            <option value="{{ $u->id }}" {{ $penjualan->user_id == $u->id ? 'selected' : '' }}>{{ $u->nama }}</option>
                         @endforeach
                     </select>
                     <small id="error-user_id" class="error-text form-text text-danger"></small>
@@ -65,8 +65,8 @@
             rules: {
                 pembeli: { required: true, minlength: 3, maxlength: 20 },
                 penjualan_kode: { required: true, minlength: 3, maxlength: 100 },
-                penjualan_tanggal: { required: true, minlength: 3, maxlength: 100 },
-                user_id: { required: true, minlength: 1, maxlength: 100 },
+                penjualan_tanggal: { required: true },
+                user_id: { required: true },
             },
             submitHandler: function(form) {
                 $.ajax({

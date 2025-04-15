@@ -20,6 +20,7 @@ class StokModel extends Model
         'stok_tanggal',
         'stok_jumlah',
         'supplier_id',
+        'stok_id',
     ];
 
     public function barang(): BelongsTo

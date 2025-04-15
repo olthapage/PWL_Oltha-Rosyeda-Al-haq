@@ -20,6 +20,7 @@ class PenjualanModel extends Model
         'pembeli',
         'penjualan_kode',
         'penjualan_tanggal',
+        'penjualan_id',
     ];
 
     public function user(): BelongsTo

@@ -9,6 +9,7 @@ use App\Models\SupplierModel;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class stokController extends Controller
 {
@@ -295,6 +296,68 @@ class stokController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Data stok tidak ditemukan'
+                ]);
+            }
+        }
+
+        return redirect('/');
+    }
+    public function import()
+    {
+        return view('stok.import');
+    }
+    public function import_ajax(Request $request)
+    {
+        if ($request->ajax() || $request->wantsJson()) {
+            $rules = ['file_stok' => ['required', 'mimes:xlsx', 'max:1024']];
+            $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'status'    => false,
+                    'message'   => 'Validasi Gagal',
+                    'msgField'  => $validator->errors()
+                ]);
+            }
+
+            $file = $request->file('file_stok');
+            $reader = IOFactory::createReader('Xlsx');
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($file->getRealPath());
+            $sheet = $spreadsheet->getActiveSheet();
+            $data = $sheet->toArray(null, false, true, true);
+            $insert = [];
+            if (count($data) > 1) {
+                foreach ($data as $baris => $value) {
+                    if ($baris > 1) {
+                        $tanggal = $value['E'];
+                        try {
+                            $excelDate = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($tanggal);
+                            $tanggalFormatted = $excelDate->format('Y-m-d H:i:s');
+                        } catch (\Exception $e) {
+                            $tanggalFormatted = date('Y-m-d H:i:s', strtotime($tanggal));
+                        }
+                        $insert[] = [
+                            'stok_id' => $value['A'],
+                            'supplier_id' => $value['B'],
+                            'barang_id' => $value['C'],
+                            'stok_tanggal' => $tanggalFormatted,
+                            'stok_jumlah' => $value['E'],
+                            'created_at'  => now()
+                        ];
+                    }
+                }
+                if (count($insert) > 0) {
+                    StokModel::insertOrIgnore($insert);
+                }
+                return response()->json([
+                    'status'  => true,
+                    'message' => 'Data berhasil diimport'
+                ]);
+            } else {
+                return response()->json([
+                    'status'  => false,
+                    'message' => 'Tidak ada data yang diimport'
                 ]);
             }
         }
