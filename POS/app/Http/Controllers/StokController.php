@@ -330,7 +330,7 @@ class stokController extends Controller
             if (count($data) > 1) {
                 foreach ($data as $baris => $value) {
                     if ($baris > 1) {
-                        $tanggal = $value['E'];
+                        $tanggal = $value['D'];
                         try {
                             $excelDate = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($tanggal);
                             $tanggalFormatted = $excelDate->format('Y-m-d H:i:s');
@@ -338,9 +338,9 @@ class stokController extends Controller
                             $tanggalFormatted = date('Y-m-d H:i:s', strtotime($tanggal));
                         }
                         $insert[] = [
-                            'stok_id' => $value['A'],
-                            'supplier_id' => $value['B'],
-                            'barang_id' => $value['C'],
+                            'supplier_id' => $value['A'],
+                            'barang_id' => $value['B'],
+                            'user_id' => $value['C'],
                             'stok_tanggal' => $tanggalFormatted,
                             'stok_jumlah' => $value['E'],
                             'created_at'  => now()
