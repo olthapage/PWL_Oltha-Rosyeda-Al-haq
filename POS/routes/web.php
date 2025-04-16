@@ -13,10 +13,10 @@ use App\Http\Controllers\StokController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\AuthController; 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\PenjualanDetailController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ProfileController;
 use App\Models\User;
 
 /*
@@ -241,6 +241,11 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware('auth');
 // Route register 
 Route::get('/register', [RegisterController::class, 'register'])->name('register');
 Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
+
+// Route profile
+ Route::get('/profile', [ProfileController::class, 'index'])->middleware('auth');
+ Route::get('/profile/edit', [ProfileController::class, 'edit'])->middleware('auth');
+ Route::post('/profile', [ProfileController::class, 'upload'])->middleware('auth');
 
 Route::middleware(['auth'])->group(function() { // artinya semua route di dalam group ini harus login dulu
     Route::get('/', [WelcomeController::class, 'index']);
