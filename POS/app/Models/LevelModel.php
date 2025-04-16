@@ -27,7 +27,6 @@ class LevelModel extends Model
     {
         return $this->level->level_nama;
     }
-
     /**
      * Cek apakah user memiliki role tertentu
      */

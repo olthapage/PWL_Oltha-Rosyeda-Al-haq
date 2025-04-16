@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class stokController extends Controller
 {
@@ -363,5 +364,73 @@ class stokController extends Controller
         }
 
         return redirect('/');
+    }
+    public function export_excel()
+    {
+        // ambil data barang yang akan di export
+        $stok = StokModel::select('stok_id', 'supplier_id', 'barang_id', 'user_id', 'stok_tanggal', 'stok_jumlah')->orderBy('stok_id')->with('supplier','barang','user')->get();
+
+        // load library excel
+        // Kemudian kita load library Spreadsheet dan kita tentukan header data pada baris pertama di excel
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet(); // ambil yang active
+
+        $sheet->setCellValue('A1', 'ID');
+        $sheet->setCellValue('B1', 'Supplier');
+        $sheet->setCellValue('C1', 'Barang');
+        $sheet->setCellValue('D1', 'User');
+        $sheet->setCellValue('E1', 'Tanggal');
+        $sheet->setCellValue('F1', 'Jumlah Stok');
+
+        $sheet->getStyle('A1:F1')->getFont()->setBold(true); // bold header
+
+        // Selanjutnya, kita looping data yang telah kita dapatkan dari database, kemudian kita masukkan ke dalam cell excel
+        $no = 1;
+        $baris = 2;
+        foreach ($stok as $key => $value) {
+            $sheet->setCellValue('A' . $baris, $value->stok_id);
+            $sheet->setCellValue('B' . $baris, $value->supplier_id);
+            $sheet->setCellValue('C' . $baris, $value->barang_id);
+            $sheet->setCellValue('D' . $baris, $value->user_id);
+            $sheet->setCellValue('E' . $baris, $value->stok_tanggal);
+            $sheet->setCellValue('F' . $baris, $value->stok_jumlah);
+            $baris++;
+            $no++;
+        }
+
+        // Kita set lebar tiap kolom di excel untuk menyesuaikan dengan panjang karakter pada masing-masing kolom
+        foreach (range('A', 'F') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true); // set auto size kolom
+        }
+
+        // Bagian akhir proses export excel adalah kita set nama sheet, dan proses untuk dapat di download oleh pengguna
+        $sheet->setTitle('Data Stok Barang'); // set title sheet
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $filename = 'Data Stok Barang ' . date('Y-m-d H:i:s') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+
+        $writer->save('php://output');
+        exit;
+    } // end function export_excel
+    public function export_pdf()
+    {
+        $stok = StokModel::select('stok_id', 'supplier_id', 'barang_id', 'user_id', 'stok_tanggal', 'stok_jumlah')->orderBy('stok_id')->with('supplier','barang','user')->get();
+
+        // use Barryvdh\DomPDF\Facade\Pdf;
+        $pdf = Pdf::loadView('stok.export_pdf', ['stok' => $stok]);
+        $pdf->setPaper('a4', 'portrait'); // set ukuran kertas dan orientasi
+        $pdf->setOption("isRemoteEnabled", true); // set true jika ada gambar dari url
+        $pdf->render();
+
+        return $pdf->stream('Data Stok ' . date('Y-m-d H:i:s') . '.pdf');
     }
 }
