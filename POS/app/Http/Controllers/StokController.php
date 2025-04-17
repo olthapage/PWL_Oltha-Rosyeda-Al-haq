@@ -236,7 +236,6 @@ class stokController extends Controller
     {
         if ($request->ajax() || $request->wantsJson()) {
             $rules = [
-                'stok_id' => 'required|integer',
                 'barang_id' => 'required|integer',
                 'user_id' => 'required|integer',
                 'stok_tanggal' => 'required|date',
