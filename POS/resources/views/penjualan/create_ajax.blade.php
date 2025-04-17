@@ -35,6 +35,29 @@
                     </select>
                     <small id="error-user_id" class="error-text form-text text-danger"></small>
                 </div>
+
+                <div class="form-group">
+                    <label>Barang</label>
+                    <select name="barang_id" id="barang_id" class="form-control" required>
+                        <option value="">-- Pilih Barang --</option>
+                        @foreach ($barang as $b)
+                            <option value="{{ $b->barang_id }}" data-harga="{{ $b->harga }}">{{ $b->barang_nama }}</option>
+                        @endforeach
+                    </select>
+                    <small id="error-barang_id" class="error-text form-text text-danger"></small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Harga</label>
+                    <input type="text" name="harga" id="harga" class="form-control" required>
+                    <small id="error-harga" class="error-text form-text text-danger"></small>
+                </div>                
+                
+                <div class="form-group">
+                    <label>Jumlah</label>
+                    <input type="text" name="jumlah" id="jumlah" class="form-control" required>
+                    <small id="error-jumlah" class="error-text form-text text-danger"></small>
+                </div>
             </div>
 
             <div class="modal-footer">
@@ -74,5 +97,9 @@
             });
             return false;
         }
+    });
+    $('#barang_id').on('change', function() {
+    let harga = $(this).find(':selected').data('harga');
+    $('#harga').val(harga);
     });
 </script>

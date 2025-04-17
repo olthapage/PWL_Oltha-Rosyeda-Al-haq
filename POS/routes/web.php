@@ -253,6 +253,8 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
 
     Route::get('/penjualanDetail', [PenjualanDetailController::class, 'index']);
     Route::post('/penjualanDetail/list', [PenjualanDetailController::class, 'list']);
+    Route::get('/penjualanDetail/export_pdf', [PenjualanDetailController::class, 'export_pdf']);
+    Route::get('/penjualanDetail/export_excel', [PenjualanDetailController::class, 'export_excel']);
 
     Route::middleware(['authorize:ADM,STF'])->group(function(){
         Route::group(['prefix' => 'level'], function () {
