@@ -412,6 +412,12 @@ class PenjualanController extends Controller
 
         return $pdf->stream('Data Penjualan ' . date('Y-m-d H:i:s') . '.pdf');
     }
+    public function show_ajax($id)
+    {
+        $penjualan = PenjualanModel::find($id);
+
+        return view('penjualan.show_ajax', compact('penjualan'));
+    }
 }
 
 // implementasi POS jobsheet 4

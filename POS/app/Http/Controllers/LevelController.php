@@ -119,7 +119,7 @@ class LevelController extends Controller
         $level = LevelModel::find($id);
 
         // Informasi halaman
-        $breadcrumb = (object) ['title' => 'Detail Level','list' => ['Home', 'Level', 'Detail']];
+        $breadcrumb = (object) ['title' => 'Detail Level', 'list' => ['Home', 'Level', 'Detail']];
         $page = (object) ['title' => 'Detail Level'];
         $activeMenu = 'level'; // Set menu yang aktif
 
@@ -423,6 +423,12 @@ class LevelController extends Controller
         $pdf->render();
 
         return $pdf->stream('Data Level ' . date('Y-m-d H:i:s') . '.pdf');
+    }
+    public function show_ajax($id)
+    {
+        $level = LevelModel::find($id);
+
+        return view('level.show_ajax', compact('level'));
     }
 }
 

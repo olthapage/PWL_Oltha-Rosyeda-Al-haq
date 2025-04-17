@@ -12,7 +12,7 @@ class SupplierModel extends Model
 
     protected $table = 'm_supplier'; // Nama tabel
     protected $primaryKey = 'supplier_id'; // Primary key
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = ['supplier_id','supplier_kode', 'supplier_nama', 'supplier_alamat'];
 

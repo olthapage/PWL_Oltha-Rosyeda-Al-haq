@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\SupplierModel;
@@ -22,7 +23,7 @@ class SupplierController extends Controller
             'title' => 'Daftar Supplier yang tersedia dalam sistem'
         ];
 
-        $activeMenu = 'supplier'; 
+        $activeMenu = 'supplier';
         $suppliers = SupplierModel::all();
         return view('supplier.index', compact('breadcrumb', 'page', 'activeMenu', 'suppliers'));
     }
@@ -375,5 +376,11 @@ class SupplierController extends Controller
         $pdf->render();
 
         return $pdf->stream('Data Supplier ' . date('Y-m-d H:i:s') . '.pdf');
+    }
+    public function show_ajax($id)
+    {
+        $supplier = SupplierModel::find($id);
+
+        return view('supplier.show_ajax', compact('supplier'));
     }
 }

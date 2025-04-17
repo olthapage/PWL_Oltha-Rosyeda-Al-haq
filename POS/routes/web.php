@@ -254,7 +254,7 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
     Route::get('/penjualanDetail', [PenjualanDetailController::class, 'index']);
     Route::post('/penjualanDetail/list', [PenjualanDetailController::class, 'list']);
 
-    Route::middleware(['authorize:ADM'])->group(function(){
+    Route::middleware(['authorize:ADM,STF'])->group(function(){
         Route::group(['prefix' => 'level'], function () {
             Route::get('/', [LevelController::class, 'index']); 
             Route::post('/list', [LevelController::class, 'list']); 
@@ -262,6 +262,7 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
             Route::post('/', [LevelController::class, 'store']); 
             Route::get('/create_ajax', [LevelController::class, 'create_ajax']);  
             Route::post('/ajax', [LevelController::class, 'store_ajax']); 
+            Route::get('/{id}/show_ajax', [LevelController::class, 'show_ajax']);
             Route::get('/{id}', [LevelController::class, 'show']);
             Route::get('/{id}/edit', [LevelController::class, 'edit']); 
             Route::put('/{id}', [LevelController::class, 'update']);
@@ -285,7 +286,8 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
             Route::get('/create', [BarangController::class, 'create']); 
             Route::post('/', [BarangController::class, 'store']); 
             Route::get('/create_ajax', [BarangController::class, 'create_ajax']);  
-            Route::post('/ajax', [BarangController::class, 'store_ajax']);  
+            Route::post('/ajax', [BarangController::class, 'store_ajax']); 
+            Route::get('/{id}/show_ajax', [BarangController::class, 'show_ajax']);
             Route::get('/{id}', [BarangController::class, 'show']); 
             Route::get('/{id}/edit', [BarangController::class, 'edit']); 
             Route::put('/{id}', [BarangController::class, 'update']); 
@@ -309,6 +311,7 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
             Route::post('/', [UserController::class, 'store']); // menyimpan data user baru
             Route::get('/create_ajax', [UserController::class, 'create_ajax']);  // Menampilkan halaman form tambah user Ajax
             Route::post('/ajax', [UserController::class, 'store_ajax']);  // Menyimpan data user baru Ajax
+            Route::get('/{id}/show_ajax', [UserController::class, 'show_ajax']);
             Route::get('/{id}', [UserController::class, 'show']); // menampilkan detail user
             Route::get('/{id}/edit', [UserController::class, 'edit']); // menampilkan halaman form edit user
             Route::put('/{id}', [UserController::class, 'update']); // menyimpan perubahan data user
@@ -331,7 +334,8 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
             Route::get('/create', [KategoriController::class, 'create']); 
             Route::post('/', [KategoriController::class, 'store']); 
             Route::get('/create_ajax', [KategoriController::class, 'create_ajax']); 
-            Route::post('/ajax', [KategoriController::class, 'store_ajax']);  
+            Route::post('/ajax', [KategoriController::class, 'store_ajax']);
+            Route::get('/{id}/show_ajax', [KategoriController::class, 'show_ajax']);  
             Route::get('/{id}', [KategoriController::class, 'show']); 
             Route::get('/{id}/edit', [KategoriController::class, 'edit']); 
             Route::put('/{id}', [KategoriController::class, 'update']);
@@ -355,6 +359,7 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
             Route::get('/create_ajax', [StokController::class, 'create_ajax']);  
             Route::post('/ajax', [StokController::class, 'store_ajax']); 
             Route::post('/', [StokController::class, 'store']); 
+            Route::get('/{id}/show_ajax', [StokController::class, 'show_ajax']); 
             Route::get('/{id}', [StokController::class, 'show']); 
             Route::get('/{id}/edit', [StokController::class, 'edit']); 
             Route::put('/{id}', [StokController::class, 'update']); 
@@ -378,6 +383,7 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
             Route::post('/', [SupplierController::class, 'store']); 
             Route::get('/create_ajax', [SupplierController::class, 'create_ajax']);  
             Route::post('/ajax', [SupplierController::class, 'store_ajax']);  
+            Route::get('/{id}/show_ajax', [SupplierController::class, 'show_ajax']); 
             Route::get('/{id}', [SupplierController::class, 'show']); 
             Route::get('/{id}/edit', [SupplierController::class, 'edit']); 
             Route::put('/{id}', [SupplierController::class, 'update']); 
@@ -401,6 +407,7 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
             Route::post('/', [PenjualanController::class, 'store']); 
             Route::get('/create_ajax', [PenjualanController::class, 'create_ajax']);  
             Route::post('/ajax', [PenjualanController::class, 'store_ajax']); 
+            Route::get('/{id}/show_ajax', [PenjualanController::class, 'show_ajax']); 
             Route::get('/{id}', [PenjualanController::class, 'show']); 
             Route::get('/{id}/edit', [PenjualanController::class, 'edit']); 
             Route::put('/{id}', [PenjualanController::class, 'update']);
