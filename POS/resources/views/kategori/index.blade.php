@@ -9,7 +9,7 @@
             {{-- <a class="btn btn-sm btn-primary mt-1" href="{{ url('kategori/create') }}">Tambah</a> --}}
             <a href="{{ url('kategori/export_excel') }}" class="btn btn-primary btn-sm"><i class="fa fa-fileexcel"></i> Export Kategori (excel)</a>
             <a href="{{ url('kategori/export_pdf') }}" class="btn btn-warning btn-sm"><i class="fa fa-filepdf"></i> Export Kategori (pdf)</a>
-            <button onclick="modalAction('{{ url('kategori/create_ajax') }}')" class="btn btn-sm btn-success">Tambah Ajax</button>
+            <button onclick="modalAction('{{ url('kategori/create_ajax') }}')" class="btn btn-sm btn-success">Tambah Kategori</button>
         </div>
     </div>
     <div class="card-body">

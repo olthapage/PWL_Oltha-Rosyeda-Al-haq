@@ -9,7 +9,7 @@
             {{-- <a class="btn btn-sm btn-primary mt-1" href="{{ url('stok/create') }}">Tambah</a> --}}
             <a href="{{ url('stok/export_excel') }}" class="btn btn-primary btn-sm"><i class="fa fa-fileexcel"></i> Export Stok (excel)</a>
             <a href="{{ url('stok/export_pdf') }}" class="btn btn-warning btn-sm"><i class="fa fa-filepdf"></i> Export Stok (pdf)</a>
-            <button onclick="modalAction('{{ url('stok/create_ajax') }}')" class="btn btn-sm btn-success">Tambah Ajax</button>
+            <button onclick="modalAction('{{ url('stok/create_ajax') }}')" class="btn btn-sm btn-success">Tambah Stok</button>
         </div>
     </div>
     <div class="card-body">

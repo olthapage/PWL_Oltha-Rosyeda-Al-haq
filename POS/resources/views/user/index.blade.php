@@ -9,7 +9,7 @@
             {{-- <a class="btn btn-sm btn-primary mt-1" href="{{ url('user/create') }}">Tambah</a> --}}
             <a href="{{ url('user/export_excel') }}" class="btn btn-primary btn-sm"><i class="fa fa-fileexcel"></i> Export User (excel)</a>
             <a href="{{ url('user/export_pdf') }}" class="btn btn-warning btn-sm"><i class="fa fa-filepdf"></i> Export User (pdf)</a>
-            <button onclick="modalAction('{{ url('user/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah Ajax</button>
+            <button onclick="modalAction('{{ url('user/create_ajax') }}')" class="btn btn-sm btn-success mt-1">Tambah User</button>
         </div>
     </div>
     <div class="card-body">
