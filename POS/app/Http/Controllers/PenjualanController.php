@@ -186,10 +186,14 @@ class PenjualanController extends Controller
             'pembeli' => 'required|string|max:255',
             'penjualan_kode' => 'required|string|max:100',
             'penjualan_tanggal' => 'required|date',
-            'barang_id' => 'required|integer',
-            'jumlah' => 'required|integer|min:1',
-            'harga' => 'required|numeric|min:0'
+            'barang_id' => 'required|array|min:1',
+            'barang_id.*' => 'required|integer|distinct',
+            'harga' => 'array|min:1',
+            'harga.*' => 'required|numeric|min:0',
+            'jumlah' => 'required|array|min:1',
+            'jumlah.*' => 'required|integer|min:1',
         ];
+        
 
         $validator = Validator::make($request->all(), $rules);
 
@@ -210,38 +214,45 @@ class PenjualanController extends Controller
                 'penjualan_tanggal' => $request->penjualan_tanggal
             ]);
 
-            PenjualanDetailModel::create([
-                'penjualan_id' => $penjualan->penjualan_id,
-                'barang_id' => $request->barang_id,
-                'harga' => $request->harga,
-                'jumlah' => $request->jumlah,
-            ]);
-
-            $stok = StokModel::where('barang_id', $request->barang_id)->first();
-
-            if (!$stok) {
-                DB::rollBack();
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Stok barang tidak ditemukan.',
-                    'msgField' => []
+            for ($i = 0; $i < count($request->barang_id); $i++) {
+                $barangId = $request->barang_id[$i];
+                $harga = $request->harga[$i];
+                $jumlah = $request->jumlah[$i];
+                $total = $harga * $jumlah;
+        
+                PenjualanDetailModel::create([
+                    'penjualan_id' => $penjualan->penjualan_id,
+                    'barang_id' => $barangId,
+                    'harga' => $harga,
+                    'jumlah' => $jumlah,
+                    'total' => $total,
                 ]);
-            }
 
-            if ($stok->stok_jumlah < $request->jumlah) {
-                DB::rollBack();
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Jumlah stok tidak mencukupi.',
-                    'msgField' => []
-                ]);
-            }
+                $stok = StokModel::where('barang_id', $barangId)->first();
 
-            $stok->stok_jumlah -= $request->jumlah;
-            $stok->save();
+                if (!$stok) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Stok barang tidak ditemukan.',
+                        'msgField' => []
+                    ]);
+                }
+    
+                if ($stok->stok_jumlah < $jumlah) {
+                    DB::rollBack();
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Jumlah stok tidak mencukupi.',
+                        'msgField' => []
+                    ]);
+                }
+    
+                $stok->stok_jumlah -= $jumlah;
+                $stok->save();
+            }
 
             DB::commit();
-
             return response()->json([
                 'status' => true,
                 'message' => 'Data penjualan berhasil disimpan.',
@@ -366,6 +377,7 @@ class PenjualanController extends Controller
             $sheet = $spreadsheet->getActiveSheet();
             $data = $sheet->toArray(null, false, true, true);
             $insert = [];
+            $insert_penjualan_detail = [];
             if (count($data) > 1) {
                 foreach ($data as $baris => $value) {
                     if ($baris > 1) {
@@ -376,17 +388,28 @@ class PenjualanController extends Controller
                         } catch (\Exception $e) {
                             $tanggalFormatted = date('Y-m-d H:i:s', strtotime($tanggal));
                         }
-                        $insert[] = [
+                        $penjualan = PenjualanModel::create([
                             'user_id' => $value['A'],
                             'pembeli' => $value['B'],
                             'penjualan_kode' => $value['C'],
                             'penjualan_tanggal' => $tanggalFormatted,
                             'created_at'  => now()
+                        ]);
+                        $barang_id = $value['E'];  
+                        $harga = $value['F'];      
+                        $jumlah = $value['G']; 
+
+                        $insert_penjualan_detail[] = [
+                            'penjualan_id' => $penjualan->penjualan_id,
+                            'barang_id' => $barang_id,
+                            'harga' => $harga,
+                            'jumlah' => $jumlah,
+                            'created_at' => now()
                         ];
                     }
                 }
-                if (count($insert) > 0) {
-                    PenjualanModel::insertOrIgnore($insert);
+                if (count($insert_penjualan_detail) > 0) {
+                    PenjualanDetailModel::insert($insert_penjualan_detail);
                 }
                 return response()->json([
                     'status'  => true,

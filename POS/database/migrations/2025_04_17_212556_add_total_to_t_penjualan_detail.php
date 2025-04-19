@@ -12,14 +12,14 @@ return new class extends Migration
     public function up()
     {
         Schema::table('t_penjualan_detail', function (Blueprint $table) {
-            $table->decimal('total', 15, 2)->nullable(); // Menambahkan kolom total dengan tipe decimal
+            $table->decimal('total', 15, 2)->nullable(); 
         });
     }
 
     public function down()
     {
         Schema::table('t_penjualan_detail', function (Blueprint $table) {
-            $table->dropColumn('total'); // Menghapus kolom total jika rollback migration
+            $table->dropColumn('total'); 
         });
     }
 };

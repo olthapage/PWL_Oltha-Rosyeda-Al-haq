@@ -36,28 +36,32 @@
                     <small id="error-user_id" class="error-text form-text text-danger"></small>
                 </div>
 
-                <div class="form-group">
-                    <label>Barang</label>
-                    <select name="barang_id" id="barang_id" class="form-control" required>
-                        <option value="">-- Pilih Barang --</option>
-                        @foreach ($barang as $b)
-                            <option value="{{ $b->barang_id }}" data-harga="{{ $b->harga }}">{{ $b->barang_nama }}</option>
-                        @endforeach
-                    </select>
-                    <small id="error-barang_id" class="error-text form-text text-danger"></small>
+                <div id="barang-wrapper">
+                    <div class="form-group barang-item mb-2">
+                        <label>Barang</label>
+                        <select name="barang_id[]" class="form-control barang-select" required>
+                            <option value="">-- Pilih Barang --</option>
+                            @foreach ($barang as $b)
+                                <option value="{{ $b->barang_id }}" data-harga="{{ $b->harga_jual }}">{{ $b->barang_nama }}</option>
+                            @endforeach
+                        </select>
+                        <small class="error-text text-danger"></small>
+                    </div>
+        
+                    <div class="form-group"> 
+                        <label>Harga</label> 
+                        <input type="text" name="harga[]" class="form-control harga-input" readonly> 
+                        <small class="error-text form-text text-danger"></small> 
+                    </div> 
+        
+                    <div class="form-group"> 
+                        <label>Jumlah</label>
+                        <input type="text" name="jumlah[]" class="form-control jumlah-input" required> 
+                        <small class="error-text text-danger"></small>
+                    </div>
                 </div>
-                
-                <div class="form-group">
-                    <label>Harga</label>
-                    <input type="text" name="harga" id="harga" class="form-control" required>
-                    <small id="error-harga" class="error-text form-text text-danger"></small>
-                </div>                
-                
-                <div class="form-group">
-                    <label>Jumlah</label>
-                    <input type="text" name="jumlah" id="jumlah" class="form-control" required>
-                    <small id="error-jumlah" class="error-text form-text text-danger"></small>
-                </div>
+
+                <button type="button" class="btn btn-success btn-sm mb-3" id="tambah-barang">+ Tambah Barang</button>
             </div>
 
             <div class="modal-footer">
@@ -69,12 +73,57 @@
 </form>
 
 <script>
+$(document).ready(function () {
+    // Fungsi untuk menambah barang
+    $('#tambah-barang').on('click', function () {
+        let barangItem = `
+            <div class="form-group barang-item mb-2">
+                <label>Barang</label>
+                <select name="barang_id[]" class="form-control barang-select" required>
+                    <option value="">-- Pilih Barang --</option>
+                    @foreach ($barang as $b)
+                        <option value="{{ $b->barang_id }}" data-harga="{{ $b->harga_jual }}">{{ $b->barang_nama }}</option>
+                    @endforeach
+                </select>
+                <small class="error-text text-danger"></small>
+            </div>
+
+            <div class="form-group"> 
+                <label>Harga</label> 
+                <input type="text" name="harga[]" class="form-control harga-input" readonly> 
+                <small class="error-text form-text text-danger"></small> 
+            </div> 
+
+            <div class="form-group"> 
+                <label>Jumlah</label>
+                <input type="text" name="jumlah[]" class="form-control jumlah-input" required> 
+                <small class="error-text text-danger"></small>
+            </div>
+
+            <button type="button" class="btn btn-danger btn-sm remove-barang mt-1">Hapus</button>
+            <hr>
+        `;
+        $('#barang-wrapper').append(barangItem);
+    });
+
+    $(document).on('click', '.remove-barang', function () {
+        $(this).closest('.barang-item').remove();
+    });
+
+    $(document).on('change', '.barang-select', function () {
+        var harga = $(this).find('option:selected').data('harga'); 
+        $(this).closest('.form-group').next().find('.harga-input').val(harga); 
+    });
+
     $("#form-tambah-penjualan").validate({
         rules: {
             penjualan_kode: { required: true },
             penjualan_tanggal: { required: true },
             pembeli: { required: true },
-            user_id: { required: true }
+            user_id: { required: true },
+            'barang_id[]': { required: true },
+            'harga[]': { required: true },
+            'jumlah[]': { required: true }
         },
         submitHandler: function(form) {
             $.ajax({
@@ -85,7 +134,7 @@
                     if (response.status) {
                         $('#modal-penjualan').modal('hide');
                         Swal.fire({ icon: 'success', title: 'Berhasil', text: response.message });
-                        dataPenjualan.ajax.reload(); // pastikan ID ini sesuai dengan ID DataTable-mu
+                        dataPenjualan.ajax.reload();
                     } else {
                         $('.error-text').text('');
                         $.each(response.msgField, function(prefix, val) {
@@ -98,8 +147,5 @@
             return false;
         }
     });
-    $('#barang_id').on('change', function() {
-    let harga = $(this).find(':selected').data('harga');
-    $('#harga').val(harga);
-    });
+});
 </script>

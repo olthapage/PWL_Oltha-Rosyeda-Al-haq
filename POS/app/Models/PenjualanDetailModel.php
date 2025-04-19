@@ -18,6 +18,7 @@ class PenjualanDetailModel extends Model
         'barang_id',
         'harga',
         'jumlah',
+        'total',
     ];
 
     // Relasi ke model Penjualan (jika ada)

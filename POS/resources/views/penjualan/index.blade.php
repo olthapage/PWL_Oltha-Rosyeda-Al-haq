@@ -57,7 +57,7 @@
     </div>
 </div>
 <div id="myModal" class="modal fade animate shake" tabindex="-1" role="dialog" data-backdrop="static"
-    data-keyboard="false" data-width="75%" aria-hidden="true"></div>
+    data-keyboard="false" data-width="75%" aria-hidden="false"></div>
 @endsection
 
 @push('css')
