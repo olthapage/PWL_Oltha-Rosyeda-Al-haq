@@ -35,9 +35,13 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{{ url('/') }}" class="brand-link">
-        <img src="{{ asset('adminlte/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img">
-        <span class="brand-text font-weight-light">PWL - Starter Code</span>
-    </a>
+      <img src="{{ asset('adminlte/dist/img/AdminLTELogo.png') }}" alt="Project Logo" class="brand-image img">
+      <span class="brand-text font-weight-light d-block" style="line-height: 1.2;">
+        <strong>Aplikasi PWL</strong><br>
+        <small style="margin-left: 2px;">Sistem Penjualan</small>
+      </span>          
+  </a>
+  
 
     <!-- Sidebar -->
     @include('layouts.sidebar')
