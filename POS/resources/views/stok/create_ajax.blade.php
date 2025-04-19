@@ -23,7 +23,7 @@
                     <select name="user_id" id="user_id" class="form-control" required>
                         <option value="">-- Pilih User --</option>
                         @foreach ($user as $u)
-                            <option value="{{ $u->user_id }}">{{ $u->user_nama }}</option>
+                            <option value="{{ $u->user_id }}">{{ $u->nama }}</option>
                         @endforeach
                     </select>
                     <small id="error-user_id" class="error-text form-text text-danger"></small>
@@ -31,8 +31,8 @@
 
                 <div class="form-group">
                     <label>Tanggal Stok</label>
-                    <input type="date" name="stok_tanggal" id="stok_tanggal" class="form-control" required>
-                    <small id="error-stok_tanggal" class="error-text form-text text-danger"></small>
+                    <input type="datetime-local" name="penjualan_tanggal" id="penjualan_tanggal" class="form-control" required>
+                    <small id="error-penjualan_tanggal" class="error-text form-text text-danger"></small>
                 </div>
 
                 <div class="form-group">
@@ -62,6 +62,9 @@
 </form>
 
 <script>
+    const now = new Date();
+    const datetimeLocal = now.toISOString().slice(0,16); 
+    $('#penjualan_tanggal').val(datetimeLocal);
     $("#form-tambah-stok").validate({
         rules: {
             barang_id: { required: true },
@@ -77,7 +80,7 @@
                 data: $(form).serialize(),
                 success: function(response) {
                     if (response.status) {
-                        $('#modal-stok').modal('hide');
+                        $('#myModal').modal('hide');
                         Swal.fire({ icon: 'success', title: 'Berhasil', text: response.message });
                         dataStok.ajax.reload();
                     } else {

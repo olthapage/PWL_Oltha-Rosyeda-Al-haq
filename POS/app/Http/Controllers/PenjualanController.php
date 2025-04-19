@@ -305,6 +305,30 @@ class PenjualanController extends Controller
             $penjualan = PenjualanModel::find($id);
             if ($penjualan) {
                 $penjualan->update($request->all());
+                // simpan detail penjuaaln
+                $detail_ids = $request->detail_id ?? [];
+                $barang_ids = $request->barang_id ?? [];
+                $hargas = $request->harga ?? [];
+                $jumlahs = $request->jumlah ?? [];
+                $totals = $request->total ?? [];
+
+                foreach ($barang_ids as $i => $barang_id) {
+                    $dataDetail = [
+                        'penjualan_id' => $penjualan->penjualan_id,
+                        'barang_id' => $barang_id,
+                        'harga' => $hargas[$i] ?? 0,
+                        'jumlah' => $jumlahs[$i] ?? 0,
+                        'total' => $totals[$i] ?? 0
+                    ];
+    
+                    $detail_id = $detail_ids[$i] ?? null;
+    
+                    if ($detail_id) {
+                        PenjualanDetailModel::where('detail_id', $detail_id)->update($dataDetail);
+                    } else {
+                        PenjualanDetailModel::create($dataDetail);
+                    }
+                }
 
                 return response()->json([
                     'status' => true,

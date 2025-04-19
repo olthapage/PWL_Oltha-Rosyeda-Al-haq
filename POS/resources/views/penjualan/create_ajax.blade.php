@@ -15,9 +15,9 @@
 
                 <div class="form-group">
                     <label>Tanggal Penjualan</label>
-                    <input type="date" name="penjualan_tanggal" id="penjualan_tanggal" class="form-control" required>
+                    <input type="datetime-local" name="penjualan_tanggal" id="penjualan_tanggal" class="form-control" required>
                     <small id="error-penjualan_tanggal" class="error-text form-text text-danger"></small>
-                </div>
+                </div>                
 
                 <div class="form-group">
                     <label>Pembeli</label>
@@ -74,6 +74,10 @@
 
 <script>
 $(document).ready(function () {
+    const now = new Date();
+    const datetimeLocal = now.toISOString().slice(0,16); 
+    $('#penjualan_tanggal').val(datetimeLocal);
+
     // Fungsi untuk menambah barang
     $('#tambah-barang').on('click', function () {
         let barangItem = `
@@ -132,7 +136,7 @@ $(document).ready(function () {
                 data: $(form).serialize(),
                 success: function(response) {
                     if (response.status) {
-                        $('#modal-penjualan').modal('hide');
+                        $('#myModal').modal('hide');
                         Swal.fire({ icon: 'success', title: 'Berhasil', text: response.message });
                         dataPenjualan.ajax.reload();
                     } else {

@@ -53,6 +53,34 @@
                     </select>
                     <small id="error-user_id" class="error-text form-text text-danger"></small>
                 </div>
+                <h5>Detail Penjualan</h5>
+<table class="table table-bordered" id="detail-penjualan-table">
+    <thead>
+        <tr>
+            <th>Nama Barang</th>
+            <th>Harga</th>
+            <th>Jumlah</th>
+            <th>Total</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($penjualan->detail as $i => $d)
+            <tr>
+                <td>
+                    <input type="hidden" name="detail_id[]" value="{{ $d->detail_id }}">
+                    <input type="text" name="barang_nama[]" class="form-control" value="{{ $d->barang->barang_nama ?? '' }}" readonly>
+                    <input type="hidden" name="barang_id[]" value="{{ $d->barang_id }}">
+                </td>
+                <td><input type="number" name="harga[]" class="form-control" value="{{ $d->harga }}"></td>
+                <td><input type="number" name="jumlah[]" class="form-control" value="{{ $d->jumlah }}"></td>
+                <td><input type="number" name="total[]" class="form-control" value="{{ $d->total }}" readonly></td>
+                <td><button type="button" class="btn btn-danger btn-sm btn-remove-detail">Hapus</button></td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+<button type="button" class="btn btn-sm btn-success" id="btn-tambah-detail">Tambah Detail</button>
             </div>
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
@@ -62,6 +90,33 @@
     </div>
 </form>
 <script>
+    $(document).on('click', '#btn-tambah-detail', function() {
+        $('#detail-penjualan-table tbody').append(`
+            <tr>
+                <td>
+                    <input type="hidden" name="detail_id[]" value="">
+                    <input type="text" name="barang_nama[]" class="form-control" value="" placeholder="Nama Barang">
+                    <input type="hidden" name="barang_id[]" value="">
+                </td>
+                <td><input type="number" name="harga[]" class="form-control" value=""></td>
+                <td><input type="number" name="jumlah[]" class="form-control" value=""></td>
+                <td><input type="number" name="total[]" class="form-control" value="0" readonly></td>
+                <td><button type="button" class="btn btn-danger btn-sm btn-remove-detail">Hapus</button></td>
+            </tr>
+        `);
+    });
+
+    $(document).on('click', '.btn-remove-detail', function() {
+        $(this).closest('tr').remove();
+    });
+
+    $(document).on('input', '[name="harga[]"], [name="jumlah[]"]', function() {
+        const row = $(this).closest('tr');
+        const harga = parseFloat(row.find('[name="harga[]"]').val()) || 0;
+        const jumlah = parseFloat(row.find('[name="jumlah[]"]').val()) || 0;
+        const total = harga * jumlah;
+        row.find('[name="total[]"]').val(total);
+    });
     $(document).ready(function() {
         $("#form-edit").validate({
             rules: {
