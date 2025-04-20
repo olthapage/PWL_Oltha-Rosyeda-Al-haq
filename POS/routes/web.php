@@ -256,7 +256,7 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
     Route::get('/penjualanDetail/export_pdf', [PenjualanDetailController::class, 'export_pdf']);
     Route::get('/penjualanDetail/export_excel', [PenjualanDetailController::class, 'export_excel']);
 
-    Route::middleware(['authorize:ADM,STF'])->group(function(){
+    Route::middleware(['authorize:ADM,MNG,DRK'])->group(function(){
         Route::group(['prefix' => 'level'], function () {
             Route::get('/', [LevelController::class, 'index']); 
             Route::post('/list', [LevelController::class, 'list']); 
@@ -281,7 +281,7 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
     });
 
     // artinya semua route di dalam group ini harus punya role ADM(administrator) dan MNG (Manager)
-    Route::middleware(['authorize:ADM,MNG'])->group(function(){
+    Route::middleware(['authorize:ADM,STF,MNG,INTER,KSR,DRK'])->group(function(){
         Route::group(['prefix' => 'barang'], function () {
             Route::get('/', [BarangController::class, 'index']); 
             Route::post('/list', [BarangController::class, 'list']); 
@@ -305,7 +305,7 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
         });
     });
 
-    Route::middleware(['authorize:ADM,MNG'])->group(function(){
+    Route::middleware(['authorize:ADM,MNG,DRK,STF'])->group(function(){
         Route::group(['prefix' => 'user'], function () {
             Route::get('/', [UserController::class, 'index']); // menampilkan halaman awal user
             Route::post('/list', [UserController::class, 'list']); // menampilkan data user dalam bentuk json untuk datatables
@@ -329,7 +329,7 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
         });
     });
 
-    Route::middleware(['authorize:ADM,MNG,STF'])->group(function(){
+    Route::middleware(['authorize:ADM,MNG,STF,DRK'])->group(function(){
         Route::group(['prefix' => 'kategori'], function () {
             Route::get('/', [KategoriController::class, 'index']); 
             Route::post('/list', [KategoriController::class, 'list']); 
@@ -353,7 +353,7 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
         });
     });
 
-    Route::middleware(['authorize:ADM,MNG,STF'])->group(function(){
+    Route::middleware(['authorize:ADM,MNG,STF,INTER,DRK,KSR'])->group(function(){
         Route::group(['prefix' => 'stok'], function () {
             Route::get('/', [StokController::class, 'index']); 
             Route::post('/list', [StokController::class, 'list']); 
@@ -377,7 +377,7 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
         });
     });
 
-    Route::middleware(['authorize:ADM,MNG,STF'])->group(function(){
+    Route::middleware(['authorize:ADM,MNG,STF,DRK'])->group(function(){
         Route::group(['prefix' => 'supplier'], function () {
             Route::get('/', [SupplierController::class, 'index']); 
             Route::post('/list', [SupplierController::class, 'list']); 
@@ -401,7 +401,7 @@ Route::middleware(['auth'])->group(function() { // artinya semua route di dalam 
         });
     });
 
-    Route::middleware(['authorize:ADM,MNG,STF'])->group(function(){
+    Route::middleware(['authorize:ADM,MNG,STF,DRK,INTER,KSR'])->group(function(){
         Route::group(['prefix' => 'penjualan'], function () {
             Route::get('/', [PenjualanController::class, 'index']); 
             Route::post('/list', [PenjualanController::class, 'list']);
