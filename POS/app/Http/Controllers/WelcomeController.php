@@ -26,7 +26,7 @@ class WelcomeController extends Controller
         $totalHargaPenjualan = PenjualanDetailModel::sum('total'); 
         $totalStock = StokModel::sum('stok_jumlah'); 
         
-        // Menampilkan barang yang stoknya kurang dari 10
+        // Menampilkan barang yang stoknya kurang dari 5
         $lowStockItems = StokModel::select('barang_id', DB::raw('SUM(stok_jumlah) as total_stok'))
             ->groupBy('barang_id')
             ->havingRaw('total_stok < 5')  

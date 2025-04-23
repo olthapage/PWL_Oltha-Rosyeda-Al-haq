@@ -248,7 +248,7 @@ class PenjualanController extends Controller
                     ]);
                 }
     
-                $stok->stok_jumlah -= $jumlah;
+                $stok->stok_jumlah  -= $jumlah;
                 $stok->save();
             }
 
