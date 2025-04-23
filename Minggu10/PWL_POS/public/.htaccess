@@ -4,7 +4,7 @@
     </IfModule>
 
     RewriteEngine On
-    RewriteBase /PWL_Oltha-Rosyeda-Al-haq/Minggu8/PWL_POS/public/
+    RewriteBase /PWL_Oltha-Rosyeda-Al-haq/Minggu10/PWL_POS/public/
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .

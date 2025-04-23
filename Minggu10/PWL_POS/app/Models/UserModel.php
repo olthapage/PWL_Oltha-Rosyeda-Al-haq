@@ -2,16 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Auth\Events\Authenticated;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class UserModel extends Authenticatable
+class UserModel extends Authenticatable implements JWTSubject
 {
-    use HasFactory;
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
     protected $table = 'm_user'; // mendifinisikan nama tabel yang digunakan oleh model ini
     protected $primaryKey = 'user_id'; // mendefinisikan primary key dari tabel yang digunakan
@@ -26,10 +33,11 @@ class UserModel extends Authenticatable
      * @var array
      */
 
-    public function level(): BelongsTo {
+    public function level(): BelongsTo
+    {
         return $this->belongsTo(LevelModel::class, 'level_id', 'level_id');
     }
-     /**
+    /**
      * Mendapatkan nama role
      */
     public function getRoleName(): string
@@ -52,5 +60,4 @@ class UserModel extends Authenticatable
     {
         return $this->level->level_kode;
     }
-
 }
