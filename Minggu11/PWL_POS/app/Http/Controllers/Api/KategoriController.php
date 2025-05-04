@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\KategoriModel;
+
+class KategoriController extends Controller
+{
+    public function index()
+    {
+        return KategoriModel::all();
+    }
+
+    public function store(Request $request)
+    {
+        $kategori = KategoriModel::create($request->all());
+        return response()->json($kategori, 201);
+    }
+
+    public function show($id)
+    {
+        return KategoriModel::findOrFail($id);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $kategori = KategoriModel::findOrFail($id);
+        $kategori->update($request->all());
+        return response()->json($kategori);
+    }
+
+    public function destroy($id)
+    {
+        $kategori = KategoriModel::findOrFail($id);
+        $kategori->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Data terhapus',
+        ]);
+    }
+}
